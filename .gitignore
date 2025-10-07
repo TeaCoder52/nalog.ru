@@ -1,0 +1,27 @@
+# Node modules
+node_modules/
+.pnpm-store/
+npm-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+
+# Build / output
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# Temporary / cache
+.cache/
+.tmp/

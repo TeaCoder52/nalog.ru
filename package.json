@@ -1,0 +1,29 @@
+{
+	"name": "nalog.ru",
+	"version": "1.0.0",
+	"description": "Библиотека для работы с API Мой Налог и автоматической отправки чеков",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/TeaCoder52/nalog.ru.git"
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.build.json",
+		"clean": "rm -rf dist",
+		"publish:public": "npm publish --access public",
+		"format": "prettier --write \"src/**/*.ts\""
+	},
+	"dependencies": {
+		"axios": "^1.12.2"
+	},
+	"devDependencies": {
+		"@trivago/prettier-plugin-sort-imports": "^5.2.2",
+		"@types/node": "^24.7.0",
+		"prettier": "^3.6.2",
+		"typescript": "^5.9.3"
+	}
+}

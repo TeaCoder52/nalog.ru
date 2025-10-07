@@ -1,0 +1,6 @@
+src/
+tsconfig.json
+tsconfig.build.json
+prettier.config.mjs
+*.log
+node_modules/
