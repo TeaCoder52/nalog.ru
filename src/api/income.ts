@@ -1,33 +1,26 @@
-import axios, { AxiosInstance } from 'axios'
+import type { AxiosInstance } from 'axios'
 
-import { API_URL } from '../constants'
 import {
 	CancelComment,
 	type CancelIncomeRequest,
 	type CreateIncomeRequest,
+	CreateIncomeResponse,
 	type IncomeClient,
 	type IncomeServiceItem
 } from '../interfaces'
 
+import { createHttpClient } from './instance'
+
 export class IncomeApi {
-	private http: AxiosInstance
+	private readonly http: AxiosInstance
 
 	public constructor(
 		private accessToken: string,
 		private deviceId: string
 	) {
-		this.http = axios.create({
-			baseURL: API_URL,
-			headers: {
-				Authorization: `Bearer ${this.accessToken}`,
-				'Content-Type': 'application/json'
-			}
-		})
+		this.http = createHttpClient(this.accessToken)
 	}
 
-	/**
-	 * Создание одного дохода (обёртка над createMultipleItems)
-	 */
 	public async create({
 		name,
 		amount,
@@ -98,16 +91,19 @@ export class IncomeApi {
 		}
 
 		try {
-			const { data } = await this.http.post('/income', {
-				operationTime: new Date().toISOString(),
-				requestTime: new Date().toISOString(),
-				services,
-				totalAmount,
-				client: client ?? {},
-				paymentType,
-				ignoreMaxTotalIncomeRestriction: false,
-				deviceId: this.deviceId
-			})
+			const { data } = await this.http.post<CreateIncomeResponse>(
+				'/income',
+				{
+					operationTime: new Date().toISOString(),
+					requestTime: new Date().toISOString(),
+					services,
+					totalAmount,
+					client: client ?? {},
+					paymentType,
+					ignoreMaxTotalIncomeRestriction: false,
+					deviceId: this.deviceId
+				}
+			)
 
 			return data
 		} catch (error: any) {

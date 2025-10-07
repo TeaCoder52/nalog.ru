@@ -1,18 +1,14 @@
-import axios, { AxiosInstance } from 'axios'
+import type { AxiosInstance } from 'axios'
 
 import { API_URL } from '../constants'
 
+import { createHttpClient } from './instance'
+
 export class ReceiptApi {
-	private http: AxiosInstance
+	private readonly http: AxiosInstance
 
 	public constructor(private accessToken: string) {
-		this.http = axios.create({
-			baseURL: API_URL,
-			headers: {
-				Authorization: `Bearer ${this.accessToken}`,
-				'Content-Type': 'application/json'
-			}
-		})
+		this.http = createHttpClient(this.accessToken)
 	}
 
 	public async getOne({
