@@ -93,7 +93,7 @@ export class Authenticator {
 		phone: string,
 		challengeToken: string,
 		verificationCode: string
-	): Promise<string> {
+	) {
 		const body = encodeJson({
 			phone,
 			code: verificationCode,
@@ -102,9 +102,9 @@ export class Authenticator {
 				sourceDeviceId: this.deviceId,
 				sourceType: 'WEB',
 				appVersion: '1.0.0',
-				metadata: {
-					os: 'Windows 10',
-					version: 'Chrome 118'
+				metaDetails: {
+					userAgent:
+						'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36'
 				}
 			}
 		})
@@ -129,8 +129,7 @@ export class Authenticator {
 			)
 		}
 
-		this.accessToken = await response.text()
-		return this.accessToken
+		return response.json()
 	}
 
 	public async refreshAccessToken(
@@ -161,7 +160,7 @@ export class Authenticator {
 		this.accessToken = token
 	}
 
-	public getAccessToken(): string | undefined {
-		return this.accessToken
+	public getAccessToken(): string {
+		return this.accessToken ?? ''
 	}
 }

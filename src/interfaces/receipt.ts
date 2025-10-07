@@ -1,19 +1,36 @@
-export interface ReceiptService {
+interface ReceiptService {
 	name: string
+	quantity: number
+	serviceNumber: number
 	amount: number
 }
 
-export interface ReceiptClient {
-	contactPhone?: string
-	displayName?: string
-	email?: string
+interface ReceiptCancellationInfo {
+	cancelledAt: string
+	reason?: string
+	cancelledBy?: string
 }
 
-export interface CreateReceiptPayload {
-	operationType: 'SALE' | 'BUY'
-	client: ReceiptClient
+export interface Receipt {
+	receiptId: string
 	services: ReceiptService[]
-	paymentType: 'CASH' | 'CASHLESS'
-	totalAmount: number
+	operationTime: string
 	requestTime: string
+	registerTime: string
+	taxPeriodId: number
+	paymentType: 'CASH' | 'CASHLESS' | string
+	incomeType: 'FROM_INDIVIDUAL' | 'FROM_ENTITY' | 'FROM_FOREIGN' | string
+	totalAmount: number
+	cancellationInfo: ReceiptCancellationInfo | null
+	sourceDeviceId: string | null
+	clientInn: string | null
+	clientDisplayName: string | null
+	partnerDisplayName: string | null
+	partnerInn: string | null
+	inn: string
+	profession: string
+	description: string[]
+	email: string | null
+	phone: string | null
+	invoiceId: string | null
 }

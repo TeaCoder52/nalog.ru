@@ -1,6 +1,6 @@
 {
 	"name": "nalog.ru",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Библиотека для работы с API Мой Налог и автоматической отправки чеков",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

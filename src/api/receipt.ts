@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 
-import type { CreateReceiptPayload } from '../interfaces'
+import { API_URL } from '../constants'
+import type { CreateReceiptRequest } from '../interfaces'
 
 export class ReceiptApi {
 	private http: AxiosInstance
@@ -18,14 +19,14 @@ export class ReceiptApi {
 		})
 	}
 
-	public async createReceipt(payload: CreateReceiptPayload) {
+	public async create(payload: CreateReceiptRequest) {
 		try {
-			const { data } = await this.http.post('/receipt', {
+			const response = await this.http.post('/receipt', {
 				...payload,
 				deviceId: this.deviceId
 			})
 
-			return data
+			return response
 		} catch (error: any) {
 			if (error.response) {
 				console.error('Ошибка создания чека:', error.response.data)
@@ -35,19 +36,19 @@ export class ReceiptApi {
 		}
 	}
 
-	public async getReceipt(inn: string, receiptUuid: string) {
-		const { data } = await this.http.get(
-			`/receipt/${inn}/${receiptUuid}/json`
-		)
+	public async getOne(inn: string, id: string) {
+		const response = await this.http.get(`/receipt/${inn}/${id}/json`)
 
-		return data
+		return response
 	}
 
-	public getReceiptPrintUrl(
-		endpoint: string,
-		inn: string,
+	public getPrintUrl({
+		inn,
+		receiptId
+	}: {
+		inn: string
 		receiptId: string
-	): string {
-		return `${endpoint}/receipt/${inn}/${receiptId}/print`
+	}): string {
+		return `${API_URL}/receipt/${inn}/${receiptId}/print`
 	}
 }
