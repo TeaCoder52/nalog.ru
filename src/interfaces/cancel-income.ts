@@ -1,7 +1,11 @@
+export enum CancelComment {
+	MISTAKE = 'MISTAKE',
+	RETURN = 'RETURN',
+	SERVICE_ERROR = 'SERVICE_ERROR'
+}
+
 export interface CancelIncomeRequest {
 	receiptUuid: string
-	comment: string
-	operationTime?: string
-	requestTime?: string
+	comment: CancelComment
 	partnerCode?: string
 }

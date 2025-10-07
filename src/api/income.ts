@@ -1,11 +1,12 @@
 import axios, { AxiosInstance } from 'axios'
 
 import { API_URL } from '../constants'
-import type {
-	CancelIncomeRequest,
-	CreateIncomeRequest,
-	IncomeClient,
-	IncomeServiceItem
+import {
+	CancelComment,
+	type CancelIncomeRequest,
+	type CreateIncomeRequest,
+	type IncomeClient,
+	type IncomeServiceItem
 } from '../interfaces'
 
 export class IncomeApi {
@@ -31,13 +32,11 @@ export class IncomeApi {
 		name,
 		amount,
 		quantity,
-		operationTime,
 		client
 	}: {
 		name: string
 		amount: number
 		quantity: number
-		operationTime?: string
 		client?: IncomeClient
 	}) {
 		const serviceItem: IncomeServiceItem = {
@@ -46,25 +45,23 @@ export class IncomeApi {
 			quantity
 		}
 
+		const totalAmount = amount * quantity
+
 		return this.createMultipleItems({
-			serviceItems: [serviceItem],
-			operationTime,
-			client
+			services: [serviceItem],
+			client,
+			totalAmount,
+			paymentType: 'CASH',
+			ignoreMaxTotalIncomeRestriction: false
 		})
 	}
 
-	public async createMultipleItems({
-		serviceItems,
-		operationTime,
-		client
-	}: {
-		serviceItems: IncomeServiceItem[]
-		operationTime?: string
-		client?: IncomeClient
-	}) {
-		if (!serviceItems.length) throw new Error('Items cannot be empty')
+	public async createMultipleItems(payload: CreateIncomeRequest) {
+		const { services, client, paymentType } = payload
 
-		for (const [index, item] of serviceItems.entries()) {
+		if (!services.length) throw new Error('Items cannot be empty')
+
+		for (const [index, item] of services.entries()) {
 			if (!item.name)
 				throw new Error(
 					`У услуги с индексом ${index} отсутствует название`
@@ -81,7 +78,7 @@ export class IncomeApi {
 				)
 		}
 
-		const totalAmount = serviceItems.reduce(
+		const totalAmount = services.reduce(
 			(sum, item) => sum + item.amount * item.quantity,
 			0
 		)
@@ -102,12 +99,12 @@ export class IncomeApi {
 
 		try {
 			const { data } = await this.http.post('/income', {
-				operationTime: operationTime || new Date().toISOString(),
+				operationTime: new Date().toISOString(),
 				requestTime: new Date().toISOString(),
-				services: serviceItems,
+				services,
 				totalAmount,
 				client: client ?? {},
-				paymentType: 'CASH',
+				paymentType,
 				ignoreMaxTotalIncomeRestriction: false,
 				deviceId: this.deviceId
 			})
@@ -122,19 +119,17 @@ export class IncomeApi {
 	}
 
 	public async cancel(data: CancelIncomeRequest) {
-		const validComments = ['MISTAKE', 'RETURN', 'SERVICE_ERROR']
-
-		if (!validComments.includes(data.comment))
+		if (!Object.values(CancelComment).includes(data.comment))
 			throw new Error(
-				`Комментарий указан неверно. Допустимые значения: ${validComments.join(
-					', '
-				)}`
+				`Комментарий указан неверно. Допустимые значения: ${Object.values(
+					CancelComment
+				).join(', ')}`
 			)
 
 		try {
 			const response = await this.http.post('/cancel', {
-				operationTime: data.operationTime || new Date().toISOString(),
-				requestTime: data.requestTime || new Date().toISOString(),
+				operationTime: new Date().toISOString(),
+				requestTime: new Date().toISOString(),
 				deviceId: this.deviceId,
 				...data
 			})

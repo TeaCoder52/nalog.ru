@@ -1,4 +1,4 @@
-import { ReceiptApi, UserApi } from './api'
+import { IncomeApi, ReceiptApi, UserApi } from './api'
 import { Authenticator } from './auth/authenticator'
 import { RequestBuilder } from './client/request-builder'
 import { DeviceIdGenerator } from './utils/device-id'
@@ -10,6 +10,7 @@ export class ApiClient {
 	private readonly deviceId: string
 
 	private receiptApi?: ReceiptApi
+	private incomeApi?: IncomeApi
 	private userApi?: UserApi
 
 	public constructor(private token?: string) {
@@ -56,10 +57,23 @@ export class ApiClient {
 			if (!token)
 				throw new Error('Access token is not set. Please login first.')
 
-			this.receiptApi = new ReceiptApi(token, this.deviceId)
+			this.receiptApi = new ReceiptApi(token)
 		}
 
 		return this.receiptApi
+	}
+
+	public get income(): IncomeApi {
+		if (!this.incomeApi) {
+			const token = this.getAccessToken()
+
+			if (!token)
+				throw new Error('Access token is not set. Please login first.')
+
+			this.incomeApi = new IncomeApi(token, this.deviceId)
+		}
+
+		return this.incomeApi
 	}
 
 	public get user(): UserApi {

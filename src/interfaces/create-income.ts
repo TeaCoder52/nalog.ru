@@ -12,8 +12,6 @@ export interface IncomeClient {
 }
 
 export interface CreateIncomeRequest {
-	operationTime?: string
-	requestTime?: string
 	services: IncomeServiceItem[]
 	totalAmount: number
 	client?: IncomeClient
