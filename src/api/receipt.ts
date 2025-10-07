@@ -1,17 +1,13 @@
 import axios, { AxiosInstance } from 'axios'
 
 import { API_URL } from '../constants'
-import type { CreateReceiptRequest } from '../interfaces'
 
 export class ReceiptApi {
 	private http: AxiosInstance
 
-	public constructor(
-		private accessToken: string,
-		private deviceId: string
-	) {
+	public constructor(private accessToken: string) {
 		this.http = axios.create({
-			baseURL: 'https://lknpd.nalog.ru/api/v1',
+			baseURL: API_URL,
 			headers: {
 				Authorization: `Bearer ${this.accessToken}`,
 				'Content-Type': 'application/json'
@@ -19,25 +15,16 @@ export class ReceiptApi {
 		})
 	}
 
-	public async create(payload: CreateReceiptRequest) {
-		try {
-			const response = await this.http.post('/receipt', {
-				...payload,
-				deviceId: this.deviceId
-			})
-
-			return response
-		} catch (error: any) {
-			if (error.response) {
-				console.error('Ошибка создания чека:', error.response.data)
-			}
-
-			throw error
-		}
-	}
-
-	public async getOne(inn: string, id: string) {
-		const response = await this.http.get(`/receipt/${inn}/${id}/json`)
+	public async getOne({
+		inn,
+		receiptId
+	}: {
+		inn: string
+		receiptId: string
+	}) {
+		const response = await this.http.get(
+			`/receipt/${inn}/${receiptId}/json`
+		)
 
 		return response
 	}

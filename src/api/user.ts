@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 
+import { API_URL } from '../constants'
 import type { User } from '../interfaces'
 
 export class UserApi {
@@ -7,7 +8,7 @@ export class UserApi {
 
 	public constructor(private accessToken: string) {
 		this.http = axios.create({
-			baseURL: 'https://lknpd.nalog.ru/api/v1',
+			baseURL: API_URL,
 			headers: {
 				Authorization: `Bearer ${this.accessToken}`,
 				'Content-Type': 'application/json'
